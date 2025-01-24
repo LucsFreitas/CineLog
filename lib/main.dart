@@ -1,6 +1,6 @@
-import 'package:cine_log/add_movie/add_movie_page.dart';
-import 'package:cine_log/home/home_page.dart';
-import 'package:cine_log/settings/settings_page.dart';
+import 'package:cine_log/pages/add_movie/add_movie_page.dart';
+import 'package:cine_log/pages/home/home_page.dart';
+import 'package:cine_log/pages/settings/settings_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
