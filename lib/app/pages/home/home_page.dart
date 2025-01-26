@@ -65,10 +65,18 @@ class _HomePageState extends State<HomePage> {
             Expanded(
               child: TabBarView(
                 children: <Widget>[
-                  Center(
-                    child:
+                  Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
                         Text("Qual será o próximo filme que iremos assistir?"),
-                  ),
+                        SizedBox(height: 15),
+                        FilledButton.tonal(
+                          onPressed: () {
+                            Navigator.of(context).pushNamed('/login');
+                          },
+                          child: Text('Login Page'),
+                        ),
+                      ]),
                   Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -84,13 +92,14 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         floatingActionButton: Padding(
-          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-          child: FloatingActionButton(
-            shape: CircleBorder(),
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          child: FloatingActionButton.extended(
             onPressed: () {
               Navigator.of(context).pushNamed('/add_movie');
             },
-            child: const Icon(Icons.add),
+            label: Row(
+              children: [Icon(Icons.add), Text('Adicionar filme')],
+            ),
           ),
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:cine_log/app/core/database/sqlite_adm_connection.dart';
+import 'package:cine_log/app/core/ui/cine_log_ui_config.dart';
 import 'package:cine_log/app/modules/auth/auth_module.dart';
 import 'package:cine_log/app/pages/add_movie/add_movie_page.dart';
 import 'package:cine_log/app/pages/home/home_page.dart';
@@ -31,22 +32,7 @@ class _AppWidgetState extends State<AppWidget> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'CineLog',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue),
-        primarySwatch: Colors.teal,
-        appBarTheme: AppBarTheme(
-          color: Colors.blue[900],
-          titleTextStyle: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-          iconTheme: IconThemeData(
-            color: Colors.white,
-          ),
-        ),
-        useMaterial3: true,
-      ),
+      theme: CineLogUiConfig.theme,
       debugShowCheckedModeBanner: false,
       initialRoute: '/login',
       home: HomePage(),
