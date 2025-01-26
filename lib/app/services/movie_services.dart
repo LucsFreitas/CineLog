@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:cine_log/models/movie.dart';
+import 'package:cine_log/app/models/movie.dart';
 import 'package:http/http.dart' as http;
 
 class MovieServices {

@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:cine_log/models/movie.dart';
-import 'package:cine_log/services/movie_services.dart';
+import 'package:cine_log/app/models/movie.dart';
+import 'package:cine_log/app/services/movie_services.dart';
 import 'package:flutter/material.dart';
 
 class AddMoviePage extends StatefulWidget {
@@ -36,7 +36,6 @@ class _AddMoviePageState extends State<AddMoviePage> {
   void _printLatestValue() {
     if (_debounce?.isActive ?? false) {
       _debounce?.cancel();
-      print('entrou no cancelamento');
     }
 
     final text = searchFieldController.text.trim();
@@ -46,7 +45,6 @@ class _AddMoviePageState extends State<AddMoviePage> {
     }
 
     _debounce = Timer(const Duration(milliseconds: 800), () async {
-      print('buscou filmes');
       var result = await movieServices.findByTitle(text, '1');
       setState(() {
         movies = result;
