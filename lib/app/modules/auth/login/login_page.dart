@@ -8,7 +8,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double statusBarHeight = MediaQuery.of(context).padding.top;
+    final double maxHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       body: LayoutBuilder(
@@ -23,7 +23,7 @@ class LoginPage extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SizedBox(height: statusBarHeight * 6),
+                    SizedBox(height: maxHeight * .12),
                     CineLogLogo(),
                     Padding(
                       padding:

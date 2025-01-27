@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 
 class CineLogField extends StatelessWidget {
   final String label;
-  final IconButton? suffixIconButton;
   final bool obscureText;
   final ValueNotifier<bool> hideTextVN;
+  final AutovalidateMode autovalidateMode;
+  final FocusNode? focusNode;
+  final TextInputAction? textInputAction;
+  final void Function(String)? onFieldSubmitted;
+  final IconButton? suffixIconButton;
   final TextEditingController? controller;
   final FormFieldValidator<String>? validator;
 
@@ -12,6 +16,10 @@ class CineLogField extends StatelessWidget {
       {super.key,
       required this.label,
       this.obscureText = false,
+      this.autovalidateMode = AutovalidateMode.disabled,
+      this.focusNode,
+      this.textInputAction,
+      this.onFieldSubmitted,
       this.suffixIconButton,
       this.controller,
       this.validator})
@@ -25,9 +33,13 @@ class CineLogField extends StatelessWidget {
       valueListenable: hideTextVN,
       builder: (_, hideTextValue, child) {
         return TextFormField(
+          autovalidateMode: autovalidateMode,
           controller: controller,
           validator: validator,
           obscureText: hideTextValue,
+          focusNode: focusNode,
+          textInputAction: textInputAction,
+          onFieldSubmitted: onFieldSubmitted,
           decoration: InputDecoration(
             labelText: label,
             border: OutlineInputBorder(
