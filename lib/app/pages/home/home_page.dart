@@ -1,3 +1,4 @@
+import 'package:cine_log/app/core/consts/texts.dart';
 import 'package:flutter/material.dart';
 
 enum PopupMenuPages {
@@ -24,7 +25,7 @@ class _HomePageState extends State<HomePage> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('CineLog'),
+          title: Text(Messages.appName),
           actions: [
             IconButton(
               onPressed: () {},
@@ -47,7 +48,7 @@ class _HomePageState extends State<HomePage> {
                 return <PopupMenuItem<PopupMenuPages>>[
                   PopupMenuItem<PopupMenuPages>(
                     value: PopupMenuPages.settings,
-                    child: Text('Configurações'),
+                    child: Text(Messages.settings),
                   )
                 ];
               },
@@ -58,8 +59,8 @@ class _HomePageState extends State<HomePage> {
           children: [
             TabBar(
               tabs: <Widget>[
-                Tab(text: 'Para assistir'),
-                Tab(text: 'Assistidos'),
+                Tab(text: Messages.toWatch),
+                Tab(text: Messages.watched),
               ],
             ),
             Expanded(
@@ -98,7 +99,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.of(context).pushNamed('/add_movie');
             },
             label: Row(
-              children: [Icon(Icons.add), Text('Adicionar filme')],
+              children: [Icon(Icons.add), Text(Messages.addMovie)],
             ),
           ),
         ),

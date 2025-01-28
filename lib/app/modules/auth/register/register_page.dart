@@ -1,9 +1,10 @@
+import 'package:cine_log/app/core/consts/texts.dart';
 import 'package:cine_log/app/core/notifier/default_listener_notifier.dart';
 import 'package:cine_log/app/core/ui/theme_extensions.dart';
 import 'package:cine_log/app/core/validators/validators.dart';
 import 'package:cine_log/app/core/widget/cine_log_field.dart';
 import 'package:cine_log/app/core/widget/cine_log_logo.dart';
-import 'package:cine_log/app/core/widget/messages.dart';
+import 'package:cine_log/app/core/widget/user_message.dart';
 import 'package:cine_log/app/modules/auth/register/register_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,9 +23,9 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordEC = TextEditingController();
   final _confirmPasswordEC = TextEditingController();
 
-  final emailFN = FocusNode();
-  final passwordFN = FocusNode();
-  final confirmPasswordFN = FocusNode();
+  final _emailFN = FocusNode();
+  final _passwordFN = FocusNode();
+  final _confirmPasswordFN = FocusNode();
 
   @override
   void dispose() {
@@ -44,7 +45,7 @@ class _RegisterPageState extends State<RegisterPage> {
     defaultListener.listener(
       context: context,
       successCallback: (notifier, listener) {
-        Messages.of(context).showInfo('Usuário criado com sucesso.');
+        UserMessage.of(context).showInfo(Messages.userCreated);
         listener.dispose();
         Navigator.of(context).pop();
       },
@@ -75,14 +76,14 @@ class _RegisterPageState extends State<RegisterPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'CineLog',
+              Messages.appName,
               style: TextStyle(
                 fontSize: 10,
                 color: context.primaryColor,
               ),
             ),
             Text(
-              'Registre-se',
+              Messages.register,
               style: TextStyle(
                 fontSize: 18,
                 color: context.primaryColor,
@@ -112,39 +113,41 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: Column(
                     children: [
                       CineLogField(
-                        label: 'Email',
-                        focusNode: emailFN,
+                        label: Messages.email,
+                        focusNode: _emailFN,
                         autovalidateMode: AutovalidateMode.onUnfocus,
                         textInputAction: TextInputAction.next,
                         onFieldSubmitted: (_) =>
-                            FocusScope.of(context).requestFocus(passwordFN),
+                            FocusScope.of(context).requestFocus(_passwordFN),
                         controller: _emailEC,
                         validator: Validatorless.multiple([
-                          Validatorless.required('Email é obrigatório'),
-                          Validatorless.email('Deve ser um email válido')
+                          Validatorless.required(Messages.emailRequired),
+                          Validatorless.email(Messages.emailInvalidFormat)
                         ]),
                       ),
                       SizedBox(height: 20),
                       CineLogField(
-                        label: 'Senha',
-                        focusNode: passwordFN,
+                        label: Messages.password,
+                        focusNode: _passwordFN,
                         autovalidateMode: AutovalidateMode.onUnfocus,
                         textInputAction: TextInputAction.next,
                         onFieldSubmitted: (_) => FocusScope.of(context)
-                            .requestFocus(confirmPasswordFN),
+                            .requestFocus(_confirmPasswordFN),
                         obscureText: true,
                         controller: _passwordEC,
                         validator: Validatorless.multiple([
-                          Validatorless.required('Senha obrigatória'),
+                          Validatorless.required(Messages.passwordRequired),
                           Validatorless.min(
-                              6, "Senha deve ter pelo menos 6 caracteres"),
+                            6,
+                            Messages.minLength(Messages.password, '6'),
+                          ),
                         ]),
                       ),
                       SizedBox(height: 20),
                       CineLogField(
-                        label: 'Confirme a senha',
+                        label: Messages.confirmPassword,
                         obscureText: true,
-                        focusNode: confirmPasswordFN,
+                        focusNode: _confirmPasswordFN,
                         autovalidateMode: AutovalidateMode.onUnfocus,
                         textInputAction: TextInputAction.done,
                         onFieldSubmitted: (_) {
@@ -153,9 +156,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         controller: _confirmPasswordEC,
                         validator: Validatorless.multiple([
                           Validatorless.required(
-                              'Confirmação de senha obrigatória'),
+                              Messages.confirmPassWordRequired),
                           Validators.compare(
-                              _passwordEC, 'Senhas informadas não conferem'),
+                              _passwordEC, Messages.confirmPassWordDoesntMatch),
                         ]),
                       ),
                       SizedBox(height: 20),
@@ -172,7 +175,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       _emailEC.text, _passwordEC.text);
                             }
                           },
-                          child: Text('Salvar'),
+                          child: Text(Messages.save),
                         ),
                       )
                     ],

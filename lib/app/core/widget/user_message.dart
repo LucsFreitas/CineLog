@@ -1,13 +1,13 @@
 import 'package:cine_log/app/core/ui/theme_extensions.dart';
 import 'package:flutter/material.dart';
 
-class Messages {
+class UserMessage {
   final BuildContext context;
 
-  Messages._(this.context);
+  UserMessage._(this.context);
 
-  factory Messages.of(BuildContext context) {
-    return Messages._(context);
+  factory UserMessage.of(BuildContext context) {
+    return UserMessage._(context);
   }
 
   void showError(String message) => _showMessage(message, Colors.red);

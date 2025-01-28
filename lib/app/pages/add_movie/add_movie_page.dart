@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cine_log/app/core/consts/texts.dart';
 import 'package:cine_log/app/models/movie.dart';
 import 'package:cine_log/app/services/movie_services.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +64,7 @@ class _AddMoviePageState extends State<AddMoviePage> {
           cursorColor: Colors.white,
           decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: 'Pesquisar...',
+            hintText: Messages.searchInput,
             hintStyle: TextStyle(fontSize: 18, color: Colors.white70),
           ),
           style: TextStyle(

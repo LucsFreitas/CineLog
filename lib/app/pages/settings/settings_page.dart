@@ -1,3 +1,4 @@
+import 'package:cine_log/app/core/consts/texts.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -7,7 +8,7 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Configurações'),
+        title: Text(Messages.settings),
       ),
       body: Center(
         child: Text('Nada aqui ainda.'),

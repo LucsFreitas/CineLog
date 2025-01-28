@@ -1,3 +1,4 @@
+import 'package:cine_log/app/core/consts/texts.dart';
 import 'package:cine_log/app/core/ui/theme_extensions.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,7 @@ class CineLogLogo extends StatelessWidget {
           height: 140,
         ),
         Text(
-          'CineLog',
+          Messages.appName,
           style: context.textTheme.headlineMedium,
         ),
       ],

@@ -1,5 +1,6 @@
+import 'package:cine_log/app/core/consts/texts.dart';
 import 'package:cine_log/app/core/notifier/default_change_notifier.dart';
-import 'package:cine_log/app/core/widget/messages.dart';
+import 'package:cine_log/app/core/widget/user_message.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 
@@ -25,8 +26,8 @@ class DefaultListenerNotifier {
         if (errorCallback != null) {
           errorCallback(changeNotifier, this);
         } else {
-          Messages.of(context)
-              .showError(changeNotifier.error ?? 'Ocorreu um erro :(');
+          UserMessage.of(context)
+              .showError(changeNotifier.error ?? Messages.unexpectedError);
         }
       } else if (changeNotifier.isSuccess) {
         successCallback(changeNotifier, this);
