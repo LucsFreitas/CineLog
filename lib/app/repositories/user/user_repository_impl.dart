@@ -46,4 +46,23 @@ class UserRepositoryImpl implements UserRepository {
       throw AuthException(message: e.message ?? Messages.loginError);
     }
   }
+
+  // FIXME: Caso utilize login via google, verificar como fica a mudança de senha
+  @override
+  Future<void> forgotPassword(String email) async {
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+    } on PlatformException catch (e) {
+      throw AuthException(message: e.message ?? Messages.loginError);
+    } on FirebaseAuthException catch (e, s) {
+      print(e);
+      print(s);
+
+      if (e.code == 'email-already-in-use') {
+        throw AuthException(message: Messages.emailAlreadyInUseError);
+      }
+
+      throw AuthException(message: e.message ?? Messages.forgotPasswordError);
+    }
+  }
 }

@@ -10,12 +10,18 @@ class DefaultListenerNotifier {
   });
 
   final DefaultChangeNotifier changeNotifier;
+  late final VoidCallback _listener;
 
-  void listener(
-      {required BuildContext context,
-      required SuccessVoidCallback successCallback,
-      ErrorVoidCallback? errorCallback}) {
-    changeNotifier.addListener(() {
+  void listener({
+    required BuildContext context,
+    required SuccessVoidCallback successCallback,
+    ErrorVoidCallback? errorCallback,
+    EverCallback? everCallback,
+  }) {
+    _listener = () {
+      if (everCallback != null) {
+        everCallback(changeNotifier, this);
+      }
       if (changeNotifier.loading) {
         context.loaderOverlay.show();
       } else {
@@ -32,11 +38,13 @@ class DefaultListenerNotifier {
       } else if (changeNotifier.isSuccess) {
         successCallback(changeNotifier, this);
       }
-    });
+    };
+
+    changeNotifier.addListener(_listener);
   }
 
   void dispose() {
-    changeNotifier.removeListener(() {});
+    changeNotifier.removeListener(_listener);
   }
 }
 
@@ -44,4 +52,7 @@ typedef SuccessVoidCallback = void Function(
     DefaultChangeNotifier notifier, DefaultListenerNotifier listenerInstance);
 
 typedef ErrorVoidCallback = void Function(
+    DefaultChangeNotifier notifier, DefaultListenerNotifier listenerInstance);
+
+typedef EverCallback = void Function(
     DefaultChangeNotifier notifier, DefaultListenerNotifier listenerInstance);

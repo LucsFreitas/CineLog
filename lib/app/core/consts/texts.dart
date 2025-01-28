@@ -30,10 +30,15 @@ class Messages {
   static String confirmPassWordDoesntMatch = 'Senhas informadas não conferem';
 
   // Messages
+  static String unexpectedError = 'Ocorreu um erro inesperado.';
   static String userCreated = 'Usuário cadastrado com sucesso.';
   static String invalidCredencials = 'Credenciais inválidas.';
   static String loginError = 'Erro ao realizar login.';
   static String registerError = 'Erro ao realizar login.';
   static String emailAlreadyInUseError = 'Email já utilizado.';
-  static String unexpectedError = 'Ocorreu um erro inesperado.';
+  static String typeAnEmailToRecoverPassword =
+      'Digite um email para recuperar a senha.';
+  static String forgotPasswordError = 'Erro ao tentar recuperar a senha.';
+  static String recoverPasswordEmaiLSent =
+      'Caso o email esteja cadastrado, você receberá um email de recuperação de senha.';
 }

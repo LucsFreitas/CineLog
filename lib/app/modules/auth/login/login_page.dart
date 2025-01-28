@@ -2,6 +2,7 @@ import 'package:cine_log/app/core/consts/texts.dart';
 import 'package:cine_log/app/core/notifier/default_listener_notifier.dart';
 import 'package:cine_log/app/core/widget/cine_log_field.dart';
 import 'package:cine_log/app/core/widget/cine_log_logo.dart';
+import 'package:cine_log/app/core/widget/user_message.dart';
 import 'package:cine_log/app/modules/auth/login/login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -30,6 +31,14 @@ class _LoginPageState extends State<LoginPage> {
     DefaultListenerNotifier(changeNotifier: context.read<LoginController>())
         .listener(
             context: context,
+            everCallback: (notifier, listenerInstance) {
+              if (notifier is LoginController) {
+                if (notifier.hasInfo == true) {
+                  UserMessage.of(context)
+                      .showInfo(Messages.recoverPasswordEmaiLSent);
+                }
+              }
+            },
             successCallback: (notifier, listener) {
               listener.dispose();
               Navigator.of(context).pushReplacementNamed('/');
@@ -98,7 +107,18 @@ class _LoginPageState extends State<LoginPage> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   TextButton(
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      if (_emailEC.text.isNotEmpty) {
+                                        await context
+                                            .read<LoginController>()
+                                            .forgotPassword(_emailEC.text);
+                                      } else {
+                                        _emailFN.requestFocus();
+                                        UserMessage.of(context).showError(
+                                            Messages
+                                                .typeAnEmailToRecoverPassword);
+                                      }
+                                    },
                                     child: Text(Messages.forgotPassword),
                                   ),
                                   FilledButton(
