@@ -5,18 +5,14 @@ import 'package:cine_log/app/services/user/user_service.dart';
 
 class LoginController extends DefaultChangeNotifier {
   final UserService _userService;
-  bool hasInfo = false;
+  String? infoMessage;
+  bool get hasInfo => infoMessage != null;
 
   LoginController({required UserService userService})
       : _userService = userService;
 
-  @override
-  void showLoadingAndResetState() {
-    hasInfo = false;
-    super.showLoadingAndResetState();
-  }
-
   Future<void> login(String email, String password) async {
+    infoMessage = null;
     showLoadingAndResetState();
     notifyListeners();
 
@@ -36,12 +32,33 @@ class LoginController extends DefaultChangeNotifier {
   }
 
   Future<void> forgotPassword(String email) async {
+    infoMessage = null;
     showLoadingAndResetState();
     notifyListeners();
 
     try {
       await _userService.forgotPassword(email);
-      hasInfo = true;
+      infoMessage = Messages.recoverPasswordEmaiLSent;
+    } on AuthException catch (e) {
+      setError(e.message);
+    } finally {
+      hideLoading();
+      notifyListeners();
+    }
+  }
+
+  Future<void> googleLogin() async {
+    infoMessage = null;
+    notifyListeners();
+    showLoadingAndResetState();
+
+    try {
+      final user = await _userService.googleLogin();
+      if (user != null) {
+        success();
+      } else {
+        infoMessage = 'Não foi possível logar via google.';
+      }
     } on AuthException catch (e) {
       setError(e.message);
     } finally {

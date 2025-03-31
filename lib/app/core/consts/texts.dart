@@ -32,7 +32,8 @@ class Messages {
   // Messages
   static String unexpectedError = 'Ocorreu um erro inesperado.';
   static String userCreated = 'Usuário cadastrado com sucesso.';
-  static String invalidCredencials = 'Credenciais inválidas.';
+  static String invalidCredencials =
+      'Credenciais inválidas ou método de acesso incorreto.';
   static String loginError = 'Erro ao realizar login.';
   static String registerError = 'Erro ao realizar login.';
   static String emailAlreadyInUseError = 'Email já utilizado.';
@@ -41,4 +42,7 @@ class Messages {
   static String forgotPasswordError = 'Erro ao tentar recuperar a senha.';
   static String recoverPasswordEmaiLSent =
       'Caso o email esteja cadastrado, você receberá um email de recuperação de senha.';
+  static String userAlreadyExists = 'Usuário já cadastrado com outro mecanismo';
+  static String googleLoginError = 'Erro ao logar via google';
+  static String doFillName = 'Preencha um nome';
 }

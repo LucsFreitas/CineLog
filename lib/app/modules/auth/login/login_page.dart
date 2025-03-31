@@ -34,14 +34,13 @@ class _LoginPageState extends State<LoginPage> {
             everCallback: (notifier, listenerInstance) {
               if (notifier is LoginController) {
                 if (notifier.hasInfo == true) {
-                  UserMessage.of(context)
-                      .showInfo(Messages.recoverPasswordEmaiLSent);
+                  UserMessage.of(context).showInfo(notifier.infoMessage!);
                 }
               }
             },
             successCallback: (notifier, listener) {
               listener.dispose();
-              Navigator.of(context).pushReplacementNamed('/');
+              Navigator.of(context).pushReplacementNamed('/home');
             });
   }
 
@@ -166,7 +165,9 @@ class _LoginPageState extends State<LoginPage> {
                                   borderRadius: BorderRadius.circular(30),
                                   borderSide: BorderSide.none,
                                 ),
-                                onPressed: () {},
+                                onPressed: () {
+                                  context.read<LoginController>().googleLogin();
+                                },
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,

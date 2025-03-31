@@ -1,4 +1,5 @@
 import 'package:cine_log/app/core/consts/texts.dart';
+import 'package:cine_log/app/modules/home/widgets/home_drawer.dart';
 import 'package:flutter/material.dart';
 
 enum PopupMenuPages {
@@ -24,6 +25,7 @@ class _HomePageState extends State<HomePage> {
       initialIndex: 0,
       length: 2,
       child: Scaffold(
+        drawer: HomeDrawer(),
         appBar: AppBar(
           title: Text(Messages.appName),
           actions: [

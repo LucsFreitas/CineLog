@@ -3,6 +3,7 @@ import 'package:cine_log/app/exceptions/auth_exception.dart';
 import 'package:cine_log/app/repositories/user/user_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class UserRepositoryImpl implements UserRepository {
   final FirebaseAuth _firebaseAuth;
@@ -61,8 +62,57 @@ class UserRepositoryImpl implements UserRepository {
       if (e.code == 'email-already-in-use') {
         throw AuthException(message: Messages.emailAlreadyInUseError);
       }
+      if (e.code == 'invalid-email') {
+        throw AuthException(message: Messages.emailInvalidFormat);
+      }
 
       throw AuthException(message: e.message ?? Messages.forgotPasswordError);
+    }
+  }
+
+  @override
+  Future<User?> googleLogin() async {
+    try {
+      final googleSignIn = GoogleSignIn();
+      final googleUser = await googleSignIn.signIn(); //abre a tela de login
+      if (googleUser != null) {
+        // final loginMethods = _firebaseAuth.fetchSignInMethodsForEmail(googleUser.email);
+        // throw AuthException(message: 'Teste google user diferente de null');
+        final googleAuth = await googleUser.authentication;
+        final firebaseCredential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+        var userCredential =
+            await _firebaseAuth.signInWithCredential(firebaseCredential);
+        return userCredential.user;
+      }
+      return null;
+    } on FirebaseAuthException catch (e, s) {
+      print(e);
+      print(s);
+
+      if (e.code == 'account-exists-with-different-credential') {
+        throw AuthException(message: Messages.userAlreadyExists);
+      }
+
+      throw AuthException(message: e.message ?? Messages.googleLoginError);
+    }
+  }
+
+  @override
+  Future<void> logout() async {
+    await GoogleSignIn().signOut();
+    await _firebaseAuth.signOut();
+  }
+
+  @override
+  Future<void> updateDisplayName(String name) async {
+    final user = _firebaseAuth.currentUser;
+
+    if (user != null) {
+      await user.updateDisplayName(name);
+      user.reload();
     }
   }
 }
