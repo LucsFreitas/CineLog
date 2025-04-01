@@ -5,12 +5,14 @@ class MigrationV1 implements Migration {
   void create(batch) {
     batch.execute('''
         CREATE TABLE movies (
-          id            integer primary key,
-          title         text,
-          originalTitle text,
-          overview      text,
-          posterPath    text,
-          dataInclusao  datetime
+          id              integer primary key,
+          title           text,
+          original_title  text,
+          overview        text,
+          poster_path     text,
+          vote_average    real,
+          release_date    datetime,
+          created_at      datetime DEFAULT (datetime('now'))
       );
     ''');
   }

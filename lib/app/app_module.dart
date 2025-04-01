@@ -1,8 +1,12 @@
 import 'package:cine_log/app/app_widget.dart';
 import 'package:cine_log/app/core/auth/cinelog_auth_provider.dart';
 import 'package:cine_log/app/core/database/sqlite_connection_factory.dart';
+import 'package:cine_log/app/repositories/movies/movie_repository.dart';
+import 'package:cine_log/app/repositories/movies/movie_repository_impl.dart';
 import 'package:cine_log/app/repositories/user/user_repository.dart';
 import 'package:cine_log/app/repositories/user/user_repository_impl.dart';
+import 'package:cine_log/app/services/movies/movie_service.dart';
+import 'package:cine_log/app/services/movies/movie_service_impl.dart';
 import 'package:cine_log/app/services/user/user_service.dart';
 import 'package:cine_log/app/services/user/user_service_impl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -28,6 +32,14 @@ class AppModule extends StatelessWidget {
         ),
         Provider<UserService>(
           create: (context) => UserServiceImpl(userRepository: context.read()),
+        ),
+        Provider<MovieRepository>(
+          create: (context) =>
+              MovieRepositoryImpl(sqliteConnectionFactory: context.read()),
+        ),
+        Provider<MovieService>(
+          create: (context) =>
+              MovieServiceImpl(movieRepository: context.read()),
         ),
         ChangeNotifierProvider(
           create: (context) => CinelogAuthProvider(

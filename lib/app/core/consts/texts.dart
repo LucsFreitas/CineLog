@@ -20,6 +20,10 @@ class Messages {
   static String watched = 'Assistidos';
   static String addMovie = 'Adicionar filme';
 
+  // Movies
+  static String overviewNotAvailable = 'Sinopse não disponível.';
+  static String titleNotAvailable = 'Título não disponível.';
+
   // Validations
   static String emailInvalidFormat = 'Deve ser um email válido';
   static String emailRequired = 'Email é obrigatório';
@@ -45,4 +49,5 @@ class Messages {
   static String userAlreadyExists = 'Usuário já cadastrado com outro mecanismo';
   static String googleLoginError = 'Erro ao logar via google';
   static String doFillName = 'Preencha um nome';
+  static String? failedFindMovies = 'Houve um erro ao tentar buscar filmes.';
 }

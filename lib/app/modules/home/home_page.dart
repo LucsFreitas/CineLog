@@ -98,7 +98,7 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           child: FloatingActionButton.extended(
             onPressed: () {
-              Navigator.of(context).pushNamed('/add_movie');
+              Navigator.of(context).pushNamed('/find_movie');
             },
             label: Row(
               children: [Icon(Icons.add), Text(Messages.addMovie)],
