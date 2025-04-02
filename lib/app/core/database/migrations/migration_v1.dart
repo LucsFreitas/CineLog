@@ -11,7 +11,8 @@ class MigrationV1 implements Migration {
           overview        text,
           poster_path     text,
           vote_average    real,
-          release_date    datetime,
+          vote_count      integer,
+          release_date    text,
           created_at      datetime DEFAULT (datetime('now'))
       );
     ''');

@@ -109,6 +109,10 @@ class _FindMoviePageState extends State<FindMoviePage> {
             },
             itemBuilder: (context, index) {
               return ListTile(
+                onTap: () {
+                  Navigator.of(context).pushNamed('/movie_details',
+                      arguments: controller.movies[index]);
+                },
                 leading: Image.network(
                   context
                       .read<FindMovieController>()

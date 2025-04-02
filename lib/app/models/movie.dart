@@ -7,7 +7,8 @@ class Movie {
   String? overview;
   String? posterPath;
   num? voteAverage;
-  DateTime? releaseDate;
+  int? voteCount;
+  String? releaseDate;
   DateTime? createdAt;
 
   Movie({
@@ -17,6 +18,7 @@ class Movie {
     this.overview,
     this.posterPath,
     this.voteAverage,
+    this.voteCount,
     this.releaseDate,
     this.createdAt,
   });
@@ -29,35 +31,25 @@ class Movie {
       'overview': overview,
       'poster_path': posterPath,
       'vote_average': voteAverage,
-      'release_date': releaseDate?.toIso8601String(),
+      'vote_count': voteCount,
+      'release_date': releaseDate,
       'created_at': createdAt?.toIso8601String(),
     };
   }
 
   String toJson() => jsonEncode(toMap());
 
-  factory Movie.fromMap(Map<String, dynamic> map) {
-    DateTime? releaseDate;
-    map['release_date'] = null;
-    try {
-      releaseDate = map['release_date']?.toString().isNotEmpty == true
-          ? DateTime.tryParse(map['release_date'])
-          : null;
-    } catch (e) {
-      releaseDate = null;
-    }
-
-    return Movie(
-      id: map['id'],
-      originalTitle: map['original_title'],
-      title: map['title'],
-      overview: map['overview'],
-      voteAverage: map['vote_average'],
-      posterPath: map['poster_path'],
-      releaseDate: releaseDate,
-      createdAt: map['created_at'],
-    );
-  }
+  factory Movie.fromMap(Map<String, dynamic> map) => Movie(
+        id: map['id'],
+        originalTitle: map['original_title'],
+        title: map['title'],
+        overview: map['overview'],
+        voteAverage: map['vote_average'],
+        voteCount: map['vote_count'],
+        posterPath: map['poster_path'],
+        releaseDate: map['release_date'],
+        createdAt: map['created_at'],
+      );
 
   factory Movie.fromJson(String json) => Movie.fromMap(jsonDecode(json));
 }

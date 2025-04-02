@@ -18,7 +18,11 @@ class FindMovieController extends DefaultChangeNotifier {
       : _movieService = movieService;
 
   void incrementPage() => nextPage + 1;
-  void resetPage() => nextPage = 1;
+
+  void resetPage() {
+    nextPage = 1;
+    movies = [];
+  }
 
   Future<void> findByTitle(String title) async {
     resetPage();

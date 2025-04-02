@@ -19,6 +19,11 @@ class Messages {
   static String toWatch = 'Para assistir';
   static String watched = 'Assistidos';
   static String addMovie = 'Adicionar filme';
+  static String overview = 'Sinopse';
+  static String releaseDate = 'Data';
+  static String addToLibrary = 'Adicionar à biblioteca';
+  static String votes = 'votos';
+  static String details = 'Detalhes';
 
   // Movies
   static String overviewNotAvailable = 'Sinopse não disponível.';
