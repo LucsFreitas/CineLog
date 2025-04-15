@@ -55,4 +55,5 @@ class Messages {
   static String googleLoginError = 'Erro ao logar via google';
   static String doFillName = 'Preencha um nome';
   static String? failedFindMovies = 'Houve um erro ao tentar buscar filmes.';
+  static String? failedSaveMovies = 'Houve um erro ao tentar salvar filme.';
 }

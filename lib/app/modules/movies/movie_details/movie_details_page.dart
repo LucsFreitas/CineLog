@@ -1,9 +1,11 @@
 import 'package:cine_log/app/core/consts/texts.dart';
 import 'package:cine_log/app/core/ui/theme_extensions.dart';
 import 'package:cine_log/app/models/movie.dart';
+import 'package:cine_log/app/modules/movies/movie_details/add_to_library_dialog.dart';
 import 'package:cine_log/app/modules/movies/movie_details/movie_details_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 
 class MovieDetailsPage extends StatelessWidget {
@@ -114,7 +116,21 @@ class MovieDetailsPage extends StatelessWidget {
             Padding(
               padding: EdgeInsets.all(10),
               child: FilledButton(
-                  onPressed: () {}, child: Text(Messages.addToLibrary)),
+                  onPressed: () async {
+                    final confirm =
+                        await showAddToLibraryDialog(context, movie);
+
+                    if (confirm == true) {
+                      context.loaderOverlay.show();
+                      await context
+                          .read<MovieDetailsController>()
+                          .saveInLibrary(movie);
+                      context.loaderOverlay.hide();
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/home', (route) => false);
+                    }
+                  },
+                  child: Text(Messages.addToLibrary)),
             ),
           ],
         ),

@@ -21,11 +21,11 @@ class MovieDetailsController extends DefaultChangeNotifier {
     notifyListeners();
 
     try {
-      // code here
+      await _movieService.save(movie);
     } on Exception catch (e, s) {
       print(e);
       print(s);
-      setError(Messages.failedFindMovies);
+      setError(Messages.failedSaveMovies);
     } finally {
       hideLoading();
       notifyListeners();
