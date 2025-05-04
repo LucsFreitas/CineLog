@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:cine_log/app/core/consts/texts.dart';
 import 'package:cine_log/app/core/notifier/default_listener_notifier.dart';
+import 'package:cine_log/app/core/widget/movie_card_horizontal.dart';
 import 'package:cine_log/app/core/widget/user_message.dart';
 import 'package:cine_log/app/modules/movies/find_movie/find_movie_controller.dart';
+import 'package:cine_log/app/modules/movies/movie_details/movie_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -98,40 +100,19 @@ class _FindMoviePageState extends State<FindMoviePage> {
       ),
       body: Consumer<FindMovieController>(
         builder: (context, controller, child) {
-          return ListView.separated(
+          return ListView.builder(
             controller: _scrollController,
             itemCount: controller.movies.length,
-            separatorBuilder: (context, index) {
-              return Divider(
-                thickness: 1,
-                color: Colors.grey,
-              );
-            },
             itemBuilder: (context, index) {
-              return ListTile(
-                onTap: () {
-                  Navigator.of(context).pushNamed('/movie_details',
-                      arguments: controller.movies[index]);
-                },
-                leading: Image.network(
-                  context
-                      .read<FindMovieController>()
-                      .getEntirePostUrl(controller.movies[index].posterPath),
-                  width: 50,
-                  height: 80,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Image.asset('assets/images/no_image_available.png',
-                        width: 50, height: 50, fit: BoxFit.cover);
+              final movie = controller.movies[index];
+              return MovieCardHorizontal(
+                movie: movie,
+                onTap: () => Navigator.of(context).pushNamed(
+                  '/movie_details',
+                  arguments: {
+                    'action': MovieAction.addToLibrary,
+                    'movie': movie
                   },
-                ),
-                title: Text(controller.movies[index].title ??
-                    controller.movies[index].originalTitle ??
-                    Messages.titleNotAvailable),
-                subtitle: Text(
-                  controller.movies[index].overview ??
-                      Messages.overviewNotAvailable,
-                  maxLines: 3,
                 ),
               );
             },

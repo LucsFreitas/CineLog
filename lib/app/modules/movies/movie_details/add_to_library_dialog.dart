@@ -1,4 +1,3 @@
-import 'package:cine_log/app/core/consts/texts.dart';
 import 'package:cine_log/app/models/movie.dart';
 import 'package:flutter/material.dart';
 
@@ -14,9 +13,7 @@ Future<bool?> showAddToLibraryDialog(BuildContext context, Movie movie) {
             style: TextStyle(fontSize: 16),
             children: [
               TextSpan(
-                text: movie.title ??
-                    movie.originalTitle ??
-                    Messages.titleNotAvailable,
+                text: movie.displayTitle!,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               TextSpan(text: ' na sua biblioteca?'),
@@ -28,13 +25,13 @@ Future<bool?> showAddToLibraryDialog(BuildContext context, Movie movie) {
             onPressed: () {
               Navigator.of(context).pop(false);
             },
-            child: Text('Cancelar', style: TextStyle(color: Colors.red)),
+            child: Text('Não', style: TextStyle(color: Colors.red)),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop(true);
             },
-            child: Text('Alterar'),
+            child: Text('Sim'),
           ),
         ],
       );

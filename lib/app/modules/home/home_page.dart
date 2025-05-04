@@ -1,4 +1,5 @@
 import 'package:cine_log/app/core/consts/texts.dart';
+import 'package:cine_log/app/modules/home/home_page_movie_list_tab.dart';
 import 'package:cine_log/app/modules/home/widgets/home_drawer.dart';
 import 'package:flutter/material.dart';
 
@@ -66,32 +67,12 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             Expanded(
-              child: TabBarView(
-                children: <Widget>[
-                  Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("Qual será o próximo filme que iremos assistir?"),
-                        SizedBox(height: 15),
-                        FilledButton.tonal(
-                          onPressed: () {
-                            Navigator.of(context).pushNamed('/login');
-                          },
-                          child: Text('Login Page'),
-                        ),
-                      ]),
-                  Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("Nenhum filme assistido ainda :("),
-                        Text("Bora mudar isso?")
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+                child: TabBarView(
+              children: const [
+                MovieListTab(filter: MovieFilter.toWatch),
+                MovieListTab(filter: MovieFilter.watched),
+              ],
+            )),
           ],
         ),
         floatingActionButton: Padding(

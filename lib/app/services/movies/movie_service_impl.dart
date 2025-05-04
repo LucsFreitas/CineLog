@@ -1,3 +1,4 @@
+import 'package:cine_log/app/core/consts/texts.dart';
 import 'package:cine_log/app/models/movie.dart';
 import 'package:cine_log/app/models/responses/movie_response.dart';
 import 'package:cine_log/app/repositories/movies/movie_repository.dart';
@@ -27,18 +28,19 @@ class MovieServiceImpl extends MovieService {
 
   @override
   Future<MovieResponse> findByTitle(String title, String page) async {
-    var result = await http.get(
+    final result = await http.get(
         Uri.parse(baseUrl).replace(
           queryParameters: {...queryParams, 'query': title, 'page': page},
         ),
         headers: headers);
 
-    var decoded = jsonDecode(result.body);
+    final decoded = jsonDecode(result.body);
 
-    var totalPages = decoded['total_pages'] ?? 1;
-    var list = decoded['results'];
-    var movies =
-        list.map<Movie>((movieMap) => Movie.fromMap(movieMap)).toList();
+    final totalPages = decoded['total_pages'] ?? 1;
+    final list = decoded['results'];
+    final movies = list
+        .map<Movie>((movieMap) => completeMovieInfos(Movie.fromMap(movieMap)))
+        .toList();
 
     return MovieResponse(totalPages: totalPages, results: movies);
   }
@@ -51,4 +53,18 @@ class MovieServiceImpl extends MovieService {
 
   @override
   Future<void> save(Movie movie) => _moviesRepository.save(movie);
+
+  @override
+  Future<List<Movie>> findAll(bool watched, String? movieName) async {
+    final movies = await _moviesRepository.findAll(watched, movieName);
+    return movies.map(completeMovieInfos).toList();
+  }
+
+  @override
+  Movie completeMovieInfos(Movie movie) {
+    return movie
+      ..posterUrl = getEntirePostUrl(movie.posterPath)
+      ..displayTitle =
+          movie.title ?? movie.originalTitle ?? Messages.titleNotAvailable;
+  }
 }

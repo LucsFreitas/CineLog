@@ -15,4 +15,12 @@ class MovieRepositoryImpl extends MovieRepository {
     movie.createdAt ??= DateTime.now();
     await conn.insert('movies', movie.toMap());
   }
+
+  @override
+  Future<List<Movie>> findAll(bool watched, String? movieName) async {
+    final conn = await _sqliteConnectionFactory.openConnection();
+    final result = await conn.rawQuery(
+        'select * from movies where watched = ${watched ? 1 : 0} order by created_at desc');
+    return result.map((movie) => Movie.fromMap(movie)).toList();
+  }
 }

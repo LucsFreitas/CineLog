@@ -8,9 +8,20 @@ import 'package:intl/intl.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 
+enum MovieAction {
+  addToLibrary,
+  markAsWatched,
+  removeFromList,
+}
+
 class MovieDetailsPage extends StatelessWidget {
   final Movie movie;
-  const MovieDetailsPage({super.key, required this.movie});
+  final MovieAction action;
+  const MovieDetailsPage({
+    super.key,
+    required this.movie,
+    required this.action,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -48,9 +59,7 @@ class MovieDetailsPage extends StatelessWidget {
                     ),
                     SizedBox(height: 10),
                     Text(
-                      movie.title ??
-                          movie.originalTitle ??
-                          Messages.titleNotAvailable,
+                      movie.displayTitle!,
                       style: context.textTheme.headlineSmall,
                       textAlign: TextAlign.center,
                     ),

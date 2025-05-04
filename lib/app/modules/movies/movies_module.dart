@@ -1,5 +1,4 @@
 import 'package:cine_log/app/core/modules/base_module.dart';
-import 'package:cine_log/app/models/movie.dart';
 import 'package:cine_log/app/modules/movies/find_movie/find_movie_controller.dart';
 import 'package:cine_log/app/modules/movies/find_movie/find_movie_page.dart';
 import 'package:cine_log/app/modules/movies/movie_details/movie_details_controller.dart';
@@ -23,8 +22,10 @@ class MoviesModule extends BaseModule {
           routers: {
             '/find_movie': (context) => FindMoviePage(),
             '/movie_details': (context) {
-              final movie = ModalRoute.of(context)!.settings.arguments as Movie;
-              return MovieDetailsPage(movie: movie);
+              final arguments = ModalRoute.of(context)!.settings.arguments
+                  as Map<String, dynamic>;
+              return MovieDetailsPage(
+                  movie: arguments['movie'], action: arguments['action']);
             },
           },
         );

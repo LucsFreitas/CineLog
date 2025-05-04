@@ -9,7 +9,11 @@ class Movie {
   num? voteAverage;
   int? voteCount;
   String? releaseDate;
+  int watched;
   DateTime? createdAt;
+
+  String? posterUrl;
+  String? displayTitle;
 
   Movie({
     required this.id,
@@ -20,6 +24,7 @@ class Movie {
     this.voteAverage,
     this.voteCount,
     this.releaseDate,
+    this.watched = 0,
     this.createdAt,
   });
 
@@ -33,6 +38,7 @@ class Movie {
       'vote_average': voteAverage,
       'vote_count': voteCount,
       'release_date': releaseDate,
+      'watched': watched,
       'created_at': createdAt?.toIso8601String(),
     };
   }
@@ -48,7 +54,10 @@ class Movie {
         voteCount: map['vote_count'],
         posterPath: map['poster_path'],
         releaseDate: map['release_date'],
-        createdAt: map['created_at'],
+        watched: map['watched'] ?? 0,
+        createdAt: map['created_at'] != null
+            ? DateTime.parse(map['created_at'])
+            : null,
       );
 
   factory Movie.fromJson(String json) => Movie.fromMap(jsonDecode(json));

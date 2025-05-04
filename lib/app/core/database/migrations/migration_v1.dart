@@ -13,7 +13,8 @@ class MigrationV1 implements Migration {
           vote_average    real,
           vote_count      integer,
           release_date    text,
-          created_at      datetime DEFAULT (datetime('now'))
+          created_at      datetime DEFAULT (datetime('now')),
+          watched         integer
       );
     ''');
   }
