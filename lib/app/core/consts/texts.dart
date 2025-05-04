@@ -22,6 +22,7 @@ class Messages {
   static String overview = 'Sinopse';
   static String releaseDate = 'Data';
   static String addToLibrary = 'Adicionar à biblioteca';
+  static String markAsWatched = 'Marcar como assistido';
   static String votes = 'votos';
   static String details = 'Detalhes';
 

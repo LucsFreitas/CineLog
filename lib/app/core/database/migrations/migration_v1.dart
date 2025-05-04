@@ -10,10 +10,14 @@ class MigrationV1 implements Migration {
           original_title  text,
           overview        text,
           poster_path     text,
+          backdrop_path   text,
+          homepage        text,
           vote_average    real,
           vote_count      integer,
+          runtime         integer,
           release_date    text,
           created_at      datetime DEFAULT (datetime('now')),
+          watched_at      datetime,
           watched         integer
       );
     ''');

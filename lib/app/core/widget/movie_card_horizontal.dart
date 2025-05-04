@@ -1,3 +1,4 @@
+import 'package:cine_log/app/core/consts/api_urls.dart';
 import 'package:cine_log/app/core/consts/texts.dart';
 import 'package:cine_log/app/core/ui/theme_extensions.dart';
 import 'package:cine_log/app/core/widget/movie_poster.dart';
@@ -28,7 +29,7 @@ class MovieCardHorizontal extends StatelessWidget {
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.2,
                 child: MoviePoster(
-                  posterUrl: movie.posterUrl,
+                  posterUrl: ApiUrls.posterUrl(movie.posterPath),
                   aspectRatio: 3 / 4,
                 ),
               ),

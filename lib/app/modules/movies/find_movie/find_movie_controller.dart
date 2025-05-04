@@ -58,7 +58,4 @@ class FindMovieController extends DefaultChangeNotifier {
       notifyListeners();
     }
   }
-
-  String getEntirePostUrl(String? posterUrl) =>
-      _movieService.getEntirePostUrl(posterUrl);
 }

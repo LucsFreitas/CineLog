@@ -1,3 +1,4 @@
+import 'package:cine_log/app/core/consts/api_urls.dart';
 import 'package:cine_log/app/models/movie.dart';
 import 'package:flutter/material.dart';
 
@@ -21,8 +22,8 @@ class MovieCardVertical extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             image: DecorationImage(
-              image: movie.posterUrl != null && movie.posterUrl!.isNotEmpty
-                  ? NetworkImage(movie.posterUrl!)
+              image: movie.posterPath != null && movie.posterPath!.isNotEmpty
+                  ? NetworkImage(ApiUrls.posterUrl(movie.posterPath))
                   : AssetImage('assets/images/no_image_available.png')
                       as ImageProvider,
               onError: (_, __) =>

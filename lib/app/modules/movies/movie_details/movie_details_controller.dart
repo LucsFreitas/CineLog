@@ -12,9 +12,6 @@ class MovieDetailsController extends DefaultChangeNotifier {
   MovieDetailsController({required MovieService movieService})
       : _movieService = movieService;
 
-  String getEntirePostUrl(String? posterUrl) =>
-      _movieService.getEntirePostUrl(posterUrl);
-
   Future<void> saveInLibrary(Movie movie) async {
     infoMessage = null;
     showLoadingAndResetState();
@@ -22,6 +19,7 @@ class MovieDetailsController extends DefaultChangeNotifier {
 
     try {
       await _movieService.save(movie);
+      success();
     } on Exception catch (e, s) {
       print(e);
       print(s);

@@ -1,4 +1,4 @@
-import 'package:cine_log/app/core/consts/texts.dart';
+import 'package:cine_log/app/core/consts/api_urls.dart';
 import 'package:cine_log/app/models/movie.dart';
 import 'package:cine_log/app/models/responses/movie_response.dart';
 import 'package:cine_log/app/repositories/movies/movie_repository.dart';
@@ -7,8 +7,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class MovieServiceImpl extends MovieService {
-  String baseUrl = 'https://api.themoviedb.org/3/search/movie';
-  String posterBaseUrl = 'https://image.tmdb.org/t/p/w154';
   final MovieRepository _moviesRepository;
 
   MovieServiceImpl({
@@ -16,8 +14,7 @@ class MovieServiceImpl extends MovieService {
   }) : _moviesRepository = movieRepository;
 
   final Map<String, String> queryParams = {
-    'language': 'pt',
-    'include_adult': 'false',
+    'language': 'pt-BR',
   };
 
   final Map<String, String> headers = {
@@ -28,8 +25,9 @@ class MovieServiceImpl extends MovieService {
 
   @override
   Future<MovieResponse> findByTitle(String title, String page) async {
+    final url = ApiUrls.searchMovie();
     final result = await http.get(
-        Uri.parse(baseUrl).replace(
+        Uri.parse(url).replace(
           queryParameters: {...queryParams, 'query': title, 'page': page},
         ),
         headers: headers);
@@ -38,17 +36,10 @@ class MovieServiceImpl extends MovieService {
 
     final totalPages = decoded['total_pages'] ?? 1;
     final list = decoded['results'];
-    final movies = list
-        .map<Movie>((movieMap) => completeMovieInfos(Movie.fromMap(movieMap)))
-        .toList();
+    final movies =
+        list.map<Movie>((movieMap) => Movie.fromMap(movieMap)).toList();
 
     return MovieResponse(totalPages: totalPages, results: movies);
-  }
-
-  @override
-  String getEntirePostUrl(String? posterUrl) {
-    if (posterUrl == null) return '';
-    return posterBaseUrl + posterUrl;
   }
 
   @override
@@ -56,15 +47,21 @@ class MovieServiceImpl extends MovieService {
 
   @override
   Future<List<Movie>> findAll(bool watched, String? movieName) async {
-    final movies = await _moviesRepository.findAll(watched, movieName);
-    return movies.map(completeMovieInfos).toList();
+    return _moviesRepository.findAll(watched, movieName);
   }
 
   @override
-  Movie completeMovieInfos(Movie movie) {
+  Future<Movie> fetchMovieExtrasDetails(Movie movie) async {
+    final url = ApiUrls.movieDetails(movie.id);
+    final result = await http.get(
+        Uri.parse(url).replace(
+          queryParameters: {...queryParams},
+        ),
+        headers: headers);
+
+    final parsed = Movie.fromJson(result.body);
     return movie
-      ..posterUrl = getEntirePostUrl(movie.posterPath)
-      ..displayTitle =
-          movie.title ?? movie.originalTitle ?? Messages.titleNotAvailable;
+      ..homepage = parsed.homepage
+      ..homepage = parsed.homepage;
   }
 }

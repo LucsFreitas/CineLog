@@ -1,20 +1,21 @@
+import 'package:cine_log/app/core/consts/api_urls.dart';
 import 'package:cine_log/app/core/consts/texts.dart';
+import 'package:cine_log/app/core/notifier/default_listener_notifier.dart';
 import 'package:cine_log/app/core/ui/theme_extensions.dart';
+import 'package:cine_log/app/core/widget/user_message.dart';
 import 'package:cine_log/app/models/movie.dart';
 import 'package:cine_log/app/modules/movies/movie_details/add_to_library_dialog.dart';
 import 'package:cine_log/app/modules/movies/movie_details/movie_details_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 
 enum MovieAction {
   addToLibrary,
   markAsWatched,
-  removeFromList,
 }
 
-class MovieDetailsPage extends StatelessWidget {
+class MovieDetailsPage extends StatefulWidget {
   final Movie movie;
   final MovieAction action;
   const MovieDetailsPage({
@@ -22,6 +23,33 @@ class MovieDetailsPage extends StatelessWidget {
     required this.movie,
     required this.action,
   });
+
+  @override
+  State<MovieDetailsPage> createState() => _MovieDetailsPageState();
+}
+
+class _MovieDetailsPageState extends State<MovieDetailsPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    DefaultListenerNotifier(
+            changeNotifier: context.read<MovieDetailsController>())
+        .listener(
+            context: context,
+            everCallback: (notifier, listenerInstance) {
+              if (notifier is MovieDetailsController) {
+                if (notifier.hasInfo == true) {
+                  UserMessage.of(context).showInfo(notifier.infoMessage!);
+                }
+              }
+            },
+            successCallback: (notifier, listener) {
+              listener.dispose();
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/home', (route) => false);
+            });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +73,7 @@ class MovieDetailsPage extends StatelessWidget {
                     SizedBox(
                       height: heightBody * .32,
                       child: Image.network(
-                        context
-                            .read<MovieDetailsController>()
-                            .getEntirePostUrl(movie.posterPath),
+                        ApiUrls.posterUrl(widget.movie.posterPath),
                         fit: BoxFit.contain,
                         errorBuilder: (context, error, stackTrace) {
                           return Image.asset(
@@ -59,7 +85,7 @@ class MovieDetailsPage extends StatelessWidget {
                     ),
                     SizedBox(height: 10),
                     Text(
-                      movie.displayTitle!,
+                      widget.movie.displayTitle!,
                       style: context.textTheme.headlineSmall,
                       textAlign: TextAlign.center,
                     ),
@@ -74,7 +100,7 @@ class MovieDetailsPage extends StatelessWidget {
                                 fontWeight: FontWeight.bold, fontSize: 18),
                             children: [
                               TextSpan(
-                                text: movie.releaseDate,
+                                text: widget.movie.releaseDate,
                                 style: TextStyle(
                                   fontWeight: FontWeight.normal,
                                   fontSize: 16,
@@ -88,14 +114,15 @@ class MovieDetailsPage extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              movie.voteAverage?.toStringAsFixed(1) ?? '0',
+                              widget.movie.voteAverage?.toStringAsFixed(1) ??
+                                  '0',
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.normal),
                             ),
                             SizedBox(width: 4),
                             Icon(Icons.star, color: Colors.amber, size: 20),
                             Text(
-                                '(${NumberFormat.compact().format(movie.voteCount)} ${Messages.votes})'),
+                                '(${NumberFormat.compact().format(widget.movie.voteCount)} ${Messages.votes})'),
                           ],
                         )
                       ],
@@ -108,7 +135,8 @@ class MovieDetailsPage extends StatelessWidget {
                         text: '${Messages.overview}: ',
                         children: [
                           TextSpan(
-                            text: '${movie.overview}${movie.overview}',
+                            text:
+                                '${widget.movie.overview}${widget.movie.overview}',
                             style: TextStyle(
                               fontWeight: FontWeight.normal,
                               fontSize: 16,
@@ -125,25 +153,32 @@ class MovieDetailsPage extends StatelessWidget {
             Padding(
               padding: EdgeInsets.all(10),
               child: FilledButton(
-                  onPressed: () async {
-                    final confirm =
-                        await showAddToLibraryDialog(context, movie);
+                onPressed: () async {
+                  final confirm =
+                      await showAddToLibraryDialog(context, widget.movie);
 
-                    if (confirm == true) {
-                      context.loaderOverlay.show();
-                      await context
-                          .read<MovieDetailsController>()
-                          .saveInLibrary(movie);
-                      context.loaderOverlay.hide();
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, '/home', (route) => false);
-                    }
-                  },
-                  child: Text(Messages.addToLibrary)),
+                  if (confirm == true) {
+                    await context
+                        .read<MovieDetailsController>()
+                        .saveInLibrary(widget.movie);
+                  }
+                },
+                child: Text(getButtonText()),
+              ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  String getButtonText() {
+    switch (widget.action) {
+      case MovieAction.addToLibrary:
+        return Messages.markAsWatched;
+
+      case MovieAction.markAsWatched:
+        return Messages.markAsWatched;
+    }
   }
 }
