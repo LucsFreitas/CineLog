@@ -29,4 +29,22 @@ class MovieDetailsController extends DefaultChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> removeFromLibrary(Movie movie) async {
+    infoMessage = null;
+    showLoadingAndResetState();
+    notifyListeners();
+
+    try {
+      await _movieService.delete(movie);
+      success();
+    } on Exception catch (e, s) {
+      print(e);
+      print(s);
+      setError(Messages.failedSaveMovies);
+    } finally {
+      hideLoading();
+      notifyListeners();
+    }
+  }
 }

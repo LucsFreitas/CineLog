@@ -4,6 +4,7 @@ class Messages {
   // AppBar Title
   static String register = 'Cadastre-se';
   static String settings = 'Configurações';
+  static String exclude = 'Excluir';
 
   // Labels
   static String email = 'Email';

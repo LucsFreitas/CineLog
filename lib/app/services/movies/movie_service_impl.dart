@@ -46,6 +46,9 @@ class MovieServiceImpl extends MovieService {
   Future<void> save(Movie movie) => _moviesRepository.save(movie);
 
   @override
+  Future<void> delete(Movie movie) => _moviesRepository.delete(movie);
+
+  @override
   Future<List<Movie>> findAll(bool watched, String? movieName) async {
     return _moviesRepository.findAll(watched, movieName);
   }

@@ -17,6 +17,12 @@ class MovieRepositoryImpl extends MovieRepository {
   }
 
   @override
+  Future<void> delete(Movie movie) async {
+    final conn = await _sqliteConnectionFactory.openConnection();
+    await conn.delete('movies', where: 'id = ?', whereArgs: [movie.id]);
+  }
+
+  @override
   Future<List<Movie>> findAll(bool watched, String? movieName) async {
     final conn = await _sqliteConnectionFactory.openConnection();
     final result = await conn.rawQuery(
