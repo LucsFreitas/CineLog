@@ -58,4 +58,6 @@ class Messages {
   static String doFillName = 'Preencha um nome';
   static String? failedFindMovies = 'Houve um erro ao tentar buscar filmes.';
   static String? failedSaveMovies = 'Houve um erro ao tentar salvar filme.';
+  static String? failedRedirectExternalURL =
+      'Falha ao redirecionar para site externo.';
 }

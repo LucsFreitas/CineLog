@@ -25,4 +25,7 @@ class MigrationV1 implements Migration {
 
   @override
   void update(batch) {}
+
+  @override
+  void downgrade(batch) {}
 }

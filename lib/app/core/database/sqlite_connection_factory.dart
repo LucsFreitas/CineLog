@@ -4,7 +4,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:synchronized/synchronized.dart';
 
 class SqliteConnectionFactory {
-  static const _version = 1;
+  static const _version = 2;
   static const _DATABASE_NAME = 'MOVIES_PROVIDER';
 
   static SqliteConnectionFactory? _instance;
@@ -68,5 +68,15 @@ class SqliteConnectionFactory {
     batch.commit();
   }
 
-  Future<void> _onDowngrade(Database db, int oldVersion, int version) async {}
+  Future<void> _onDowngrade(Database db, int oldVersion, int version) async {
+    final batch = db.batch();
+
+    final migrations =
+        SqliteMigrationFactory().getDowngradeMigration(oldVersion);
+    for (var migration in migrations) {
+      migration.downgrade(batch);
+    }
+
+    batch.commit();
+  }
 }

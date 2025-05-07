@@ -1,5 +1,6 @@
 import 'package:cine_log/app/core/consts/api_urls.dart';
 import 'package:cine_log/app/models/movie.dart';
+import 'package:cine_log/app/models/responses/movie_details_response.dart';
 import 'package:cine_log/app/models/responses/movie_response.dart';
 import 'package:cine_log/app/repositories/movies/movie_repository.dart';
 import 'package:cine_log/app/services/movies/movie_service.dart';
@@ -54,7 +55,7 @@ class MovieServiceImpl extends MovieService {
   }
 
   @override
-  Future<Movie> fetchMovieExtrasDetails(Movie movie) async {
+  Future<Movie> fetchMovieDetails(Movie movie) async {
     final url = ApiUrls.movieDetails(movie.id);
     final result = await http.get(
         Uri.parse(url).replace(
@@ -62,9 +63,10 @@ class MovieServiceImpl extends MovieService {
         ),
         headers: headers);
 
-    final parsed = Movie.fromJson(result.body);
+    final parsed = MovieDetailsResponse.fromJson(result.body);
     return movie
       ..homepage = parsed.homepage
-      ..homepage = parsed.homepage;
+      ..genres = parsed.genres
+      ..runtime = parsed.runtime;
   }
 }

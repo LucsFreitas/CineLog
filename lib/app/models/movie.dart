@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:cine_log/app/core/consts/texts.dart';
 
 class Movie {
+  static String genreSeparator = ';';
+
   int id;
   String? originalTitle;
   String? title;
@@ -10,6 +12,7 @@ class Movie {
   String? posterPath;
   String? backdropPath;
   String? homepage;
+  String? genres;
   num? voteAverage;
   int? voteCount;
   int? runtime;
@@ -28,6 +31,7 @@ class Movie {
     this.posterPath,
     this.backdropPath,
     this.homepage,
+    this.genres,
     this.voteAverage,
     this.voteCount,
     this.runtime,
@@ -47,6 +51,7 @@ class Movie {
       'poster_path': posterPath,
       'backdrop_path': backdropPath,
       'homepage': homepage,
+      'genres': genres,
       'vote_average': voteAverage,
       'vote_count': voteCount,
       'runtime': runtime,
@@ -69,6 +74,7 @@ class Movie {
       posterPath: map['poster_path'],
       backdropPath: map['backdrop_path'],
       homepage: map['homepage'],
+      genres: map['genres'],
       runtime: map['runtime'],
       releaseDate: map['release_date'],
       watched: map['watched'] ?? 0,

@@ -55,10 +55,20 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
               Navigator.pushNamedAndRemoveUntil(
                   context, '/home', (route) => false);
             });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadData());
+  }
+
+  Future<void> _loadData() async {
+    final controller = context.read<MovieDetailsController>();
+    await controller.loadData(widget.movie);
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    final controller = context.read<MovieDetailsController>();
+
     final mediaQuery = MediaQuery.of(context);
 
     final appBarSize = mediaQuery.padding.top + kToolbarHeight;
@@ -138,8 +148,8 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
                         ),
                         // topo com poster
                         Container(
-                          padding: EdgeInsets.all(15),
-                          height: totalHeight * 0.27,
+                          padding: EdgeInsets.symmetric(horizontal: 15),
+                          height: totalHeight * 0.25,
                           child: Row(
                             children: [
                               SizedBox(
@@ -196,29 +206,61 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
                                         ),
                                       ],
                                     ),
-                                    Text(
-                                      widget.movie.homepage ?? 'google.com',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
-                                            color: Colors.blue[600],
-                                            decoration:
-                                                TextDecoration.underline,
-                                            decorationColor: Colors.blue[600],
-                                          ),
-                                    ),
+                                    widget.movie.homepage?.trim().isNotEmpty ==
+                                            true
+                                        ? InkWell(
+                                            onTap: () async {
+                                              await controller.openUrl(
+                                                  widget.movie.homepage!);
+                                            },
+                                            child: Text(
+                                              'Visite o site oficial',
+                                              style: TextStyle(
+                                                color: Colors.blue,
+                                                decoration:
+                                                    TextDecoration.underline,
+                                              ),
+                                            ),
+                                          )
+                                        : SizedBox.shrink(),
                                   ],
                                 ),
                               ),
                             ],
                           ),
                         ),
+                        widget.movie.genres != null
+                            ? Padding(
+                                padding: EdgeInsets.only(
+                                    left: 10, right: 10, bottom: 10),
+                                child: Wrap(
+                                  spacing: 5,
+                                  runSpacing: 6,
+                                  alignment: WrapAlignment.center,
+                                  children: widget.movie.genres!
+                                      .split(Movie.genreSeparator)
+                                      .map((genre) => Chip(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 0, vertical: 5),
+                                            materialTapTargetSize:
+                                                MaterialTapTargetSize
+                                                    .shrinkWrap,
+                                            label: Text(
+                                              genre,
+                                              style: TextStyle(fontSize: 11),
+                                            ),
+                                            backgroundColor: Colors.blue[50],
+                                          ))
+                                      .toList(),
+                                ),
+                              )
+                            : SizedBox.shrink(),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 15),
                           child: ExpandableText(
-                            '${widget.movie.overview}${widget.movie.overview}${widget.movie.overview}${widget.movie.overview}${widget.movie.overview}',
-                            maxLines: 6,
+                            '${widget.movie.overview}',
+                            textAlign: TextAlign.justify,
+                            maxLines: 4,
                             expandText: 'Mostrar mais',
                             collapseText: 'Mostrar menos',
                             animationDuration: Duration(seconds: 1),
@@ -278,7 +320,7 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
         : null;
     if (year != null) parts.add(year);
 
-    final runtime = widget.movie.runtime ?? 103;
+    final runtime = widget.movie.runtime;
     if (runtime != null) {
       final hours = runtime ~/ 60;
       final minutes = runtime % 60;

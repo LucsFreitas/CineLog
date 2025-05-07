@@ -6,5 +6,5 @@ abstract class MovieService {
   Future<void> save(Movie movie);
   Future<void> delete(Movie movie);
   Future<List<Movie>> findAll(bool watched, String? movieName);
-  Future<Movie> fetchMovieExtrasDetails(Movie movie);
+  Future<Movie> fetchMovieDetails(Movie movie);
 }
