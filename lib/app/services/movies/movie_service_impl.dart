@@ -44,7 +44,12 @@ class MovieServiceImpl extends MovieService {
   }
 
   @override
-  Future<void> save(Movie movie) => _moviesRepository.save(movie);
+  Future<void> save(Movie movie) async {
+    final exists = await _moviesRepository.findById(movie.id);
+    return exists == null
+        ? _moviesRepository.save(movie)
+        : _moviesRepository.update(movie);
+  }
 
   @override
   Future<void> delete(Movie movie) => _moviesRepository.delete(movie);

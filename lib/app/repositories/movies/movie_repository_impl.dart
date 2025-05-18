@@ -17,9 +17,27 @@ class MovieRepositoryImpl extends MovieRepository {
   }
 
   @override
+  Future<void> update(Movie movie) async {
+    final conn = await _sqliteConnectionFactory.openConnection();
+    await conn.update(
+      'movies',
+      movie.toMap(),
+      where: 'id = ?',
+      whereArgs: [movie.id],
+    );
+  }
+
+  @override
   Future<void> delete(Movie movie) async {
     final conn = await _sqliteConnectionFactory.openConnection();
     await conn.delete('movies', where: 'id = ?', whereArgs: [movie.id]);
+  }
+
+  @override
+  Future<Movie?> findById(int id) async {
+    final conn = await _sqliteConnectionFactory.openConnection();
+    final result = await conn.query('movies', where: 'id = ?', whereArgs: [id]);
+    return result.isNotEmpty ? Movie.fromMap(result[0]) : null;
   }
 
   @override

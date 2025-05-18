@@ -22,14 +22,43 @@ class Messages {
   static String addMovie = 'Adicionar filme';
   static String overview = 'Sinopse';
   static String releaseDate = 'Data';
-  static String addToLibrary = 'Adicionar à biblioteca';
-  static String markAsWatched = 'Marcar como assistido';
+  static String addToLibrary = 'Quero assistir';
+  static String reAddToLibrary = 'Quero assistir novamente';
+  static String markAsWatched = 'Já assisti';
   static String votes = 'votos';
   static String details = 'Detalhes';
+  static String showMore = 'Mostrar mais';
+  static String showLess = 'Mostrar menos';
+  static String oficialWebsite = 'Visite o site oficial';
+  static String defaultTextToWatchTab =
+      'Qual será o próximo filme que iremos assistir?';
+  static String defaultTextWatchedTab =
+      'Nenhum filme assistido ainda :(\nBora mudar isso?';
 
   // Movies
   static String overviewNotAvailable = 'Sinopse não disponível.';
   static String titleNotAvailable = 'Título não disponível.';
+
+  // Dialogs
+  static String yes = 'Sim';
+  static String no = 'Não';
+
+  static String addToLibraryTitle = 'Adicionar filme';
+  static String addToLibraryText_1 = 'Deseja incluir ';
+  static String addToLibraryText_2 = ' na sua biblioteca?';
+
+  static String markAsWatchedTitle = 'Já assistiu?';
+  static String markAsWatchedText_1 = 'Deseja marcar ';
+  static String markAsWatchedText_2 = ' como assistido?';
+
+  static String removeFromLibraryTitle = 'Remover da biblioteca';
+  static String removeFromLibraryText_1 = 'Deseja remover ';
+  static String removeFromLibraryText_2 = ' da sua biblioteca?';
+
+  static String reAddToLibraryTitle = 'Reassistir?';
+  static String reAddToLibraryText_1 = 'Deseja retornar ';
+  static String reAddToLibraryText_2 =
+      ' para a lista de filmes a serem assistidos?';
 
   // Validations
   static String emailInvalidFormat = 'Deve ser um email válido';

@@ -4,26 +4,20 @@ import 'package:cine_log/app/core/notifier/default_listener_notifier.dart';
 import 'package:cine_log/app/core/widget/movie_poster.dart';
 import 'package:cine_log/app/core/widget/user_message.dart';
 import 'package:cine_log/app/models/movie.dart';
-import 'package:cine_log/app/modules/movies/movie_details/dialogs/add_to_library_dialog.dart';
-import 'package:cine_log/app/modules/movies/movie_details/dialogs/remove_from_library_dialog.dart';
+import 'package:cine_log/app/modules/movies/movie_details/dialogs/confirm_dialog.dart';
 import 'package:cine_log/app/modules/movies/movie_details/movie_details_controller.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-enum MovieAction {
-  addToLibrary,
-  markAsWatched,
-}
-
-enum PopupMenuMoviePages {
-  exclude,
-}
+enum MovieAction { none, markAsWatched, reAddToLibrary, bothAdd }
 
 class MovieDetailsPage extends StatefulWidget {
   final Movie movie;
   final MovieAction action;
+
   const MovieDetailsPage({
     super.key,
     required this.movie,
@@ -60,20 +54,26 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
   }
 
   Future<void> _loadData() async {
-    final controller = context.read<MovieDetailsController>();
-    await controller.loadData(widget.movie);
-    setState(() {});
+    final movie = widget.movie;
+    if (movie.homepage == null &&
+        movie.runtime == null &&
+        movie.genres == null) {
+      final controller = context.read<MovieDetailsController>();
+      await controller.loadData(widget.movie);
+      setState(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.read<MovieDetailsController>();
-
     final mediaQuery = MediaQuery.of(context);
 
     final appBarSize = mediaQuery.padding.top + kToolbarHeight;
     final totalHeight = mediaQuery.size.height;
     final backdropHeight = totalHeight * 0.22;
+
+    final movie = widget.movie;
+    final controller = context.read<MovieDetailsController>();
 
     return Scaffold(
       appBar: AppBar(
@@ -81,31 +81,12 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
           Messages.details,
         ),
         actions: [
-          PopupMenuButton(
-            icon: Icon(Icons.more_vert),
-            onSelected: (PopupMenuMoviePages selected) async {
-              switch (selected) {
-                case PopupMenuMoviePages.exclude:
-                  final confirm =
-                      await showRemoveFromLibraryDialog(context, widget.movie);
-
-                  if (confirm == true) {
-                    await context
-                        .read<MovieDetailsController>()
-                        .removeFromLibrary(widget.movie);
-                  }
-                  break;
-              }
-            },
-            itemBuilder: (BuildContext context) {
-              return <PopupMenuItem<PopupMenuMoviePages>>[
-                PopupMenuItem<PopupMenuMoviePages>(
-                  value: PopupMenuMoviePages.exclude,
-                  child: Text(Messages.exclude),
+          widget.action != MovieAction.bothAdd
+              ? IconButton(
+                  onPressed: () => _handleRemoveFromLibrary(context),
+                  icon: Icon(Icons.delete_outline),
                 )
-              ];
-            },
-          ),
+              : SizedBox.shrink(),
         ],
       ),
       body: Column(
@@ -120,10 +101,16 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
                       width: double.infinity,
                       child: Opacity(
                         opacity: 0.55,
-                        child: Image.network(
-                          ApiUrls.backdropUrl(widget.movie.backdropPath),
-                          fit: BoxFit.cover,
-                        ),
+                        child: movie.backdropPath != null &&
+                                movie.backdropPath!.isNotEmpty
+                            ? Image.network(
+                                ApiUrls.backdropUrl(movie.backdropPath),
+                                fit: BoxFit.cover,
+                              )
+                            : Image.asset(
+                                'assets/images/cinema.png',
+                                fit: BoxFit.cover,
+                              ),
                       ),
                     ),
                     Container(
@@ -146,7 +133,6 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
                         SizedBox(
                           height: appBarSize * 1.2,
                         ),
-                        // topo com poster
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 15),
                           height: totalHeight * 0.25,
@@ -156,8 +142,8 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
                                 width: mediaQuery.size.width * 0.3,
                                 child: MoviePoster(
                                   aspectRatio: 2 / 3,
-                                  posterUrl: ApiUrls.posterUrl(
-                                      widget.movie.posterPath),
+                                  posterUrl:
+                                      ApiUrls.posterUrl(movie.posterPath),
                                 ),
                               ),
                               SizedBox(
@@ -169,7 +155,7 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      widget.movie.displayTitle!,
+                                      movie.displayTitle!,
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 20),
@@ -187,7 +173,7 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
-                                          widget.movie.voteAverage
+                                          movie.voteAverage
                                                   ?.toStringAsFixed(1) ??
                                               '0',
                                           style: Theme.of(context)
@@ -202,19 +188,18 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
                                         Icon(Icons.star,
                                             color: Colors.amber[800], size: 20),
                                         Text(
-                                          '(${NumberFormat.compact().format(widget.movie.voteCount)} ${Messages.votes})',
+                                          '(${NumberFormat.compact().format(movie.voteCount)} ${Messages.votes})',
                                         ),
                                       ],
                                     ),
-                                    widget.movie.homepage?.trim().isNotEmpty ==
-                                            true
+                                    movie.homepage?.trim().isNotEmpty == true
                                         ? InkWell(
                                             onTap: () async {
-                                              await controller.openUrl(
-                                                  widget.movie.homepage!);
+                                              await controller
+                                                  .openUrl(movie.homepage!);
                                             },
                                             child: Text(
-                                              'Visite o site oficial',
+                                              Messages.oficialWebsite,
                                               style: TextStyle(
                                                 color: Colors.blue,
                                                 decoration:
@@ -229,7 +214,14 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
                             ],
                           ),
                         ),
-                        widget.movie.genres != null
+                        movie.watchedAt != null
+                            ? Padding(
+                                padding: EdgeInsets.only(
+                                    left: 10, right: 10, bottom: 10),
+                                child: Text(formatWatchDate(movie.watchedAt!)),
+                              )
+                            : SizedBox.shrink(),
+                        movie.genres != null && movie.genres!.isNotEmpty
                             ? Padding(
                                 padding: EdgeInsets.only(
                                     left: 10, right: 10, bottom: 10),
@@ -237,7 +229,7 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
                                   spacing: 5,
                                   runSpacing: 6,
                                   alignment: WrapAlignment.center,
-                                  children: widget.movie.genres!
+                                  children: movie.genres!
                                       .split(Movie.genreSeparator)
                                       .map((genre) => Chip(
                                             padding: EdgeInsets.symmetric(
@@ -258,16 +250,16 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 15),
                           child: ExpandableText(
-                            '${widget.movie.overview}',
+                            '${movie.overview}',
                             textAlign: TextAlign.justify,
                             maxLines: 4,
-                            expandText: 'Mostrar mais',
-                            collapseText: 'Mostrar menos',
+                            expandText: Messages.showMore,
+                            collapseText: Messages.showLess,
                             animationDuration: Duration(seconds: 1),
                             expandOnTextTap: true,
                             collapseOnTextTap: true,
                             linkColor: Theme.of(context).colorScheme.primary,
-                            prefixText: 'Sinopse: ',
+                            prefixText: '${Messages.overview}: ',
                             animation: true,
                             prefixStyle: TextStyle(fontWeight: FontWeight.bold),
                             style: TextStyle(fontSize: 16, color: Colors.black),
@@ -280,35 +272,121 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
               ),
             ),
           ),
-          // Botão de ação
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 10),
-            child: FilledButton(
-              onPressed: () async {
-                final confirm =
-                    await showAddToLibraryDialog(context, widget.movie);
-
-                if (confirm == true) {
-                  await context
-                      .read<MovieDetailsController>()
-                      .saveInLibrary(widget.movie);
-                }
-              },
-              child: Text(getButtonText()),
-            ),
-          ),
         ],
+      ),
+      floatingActionButton: Padding(
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        child: Builder(
+          builder: (_) {
+            switch (widget.action) {
+              case MovieAction.bothAdd:
+                return SpeedDial(
+                  animatedIcon: AnimatedIcons.menu_close,
+                  overlayColor: Colors.grey[700],
+                  spacing: 10,
+                  spaceBetweenChildren: 10,
+                  children: [
+                    SpeedDialChild(
+                      child: Icon(Icons.bookmark_add_outlined),
+                      label: Messages.addToLibrary,
+                      onTap: () => _handleAddToLibrary(),
+                    ),
+                    SpeedDialChild(
+                      child: Icon(Icons.check_circle_outline),
+                      label: Messages.markAsWatched,
+                      onTap: () => _handleMarkAsWatched(),
+                    ),
+                  ],
+                );
+              case MovieAction.markAsWatched:
+                return FloatingActionButton.extended(
+                  onPressed: _handleMarkAsWatched,
+                  label: Row(
+                    children: [Icon(Icons.check), Text(Messages.markAsWatched)],
+                  ),
+                );
+              case MovieAction.reAddToLibrary:
+                return FloatingActionButton.extended(
+                  onPressed: _handleReAddToLibrary,
+                  label: Row(
+                    children: [
+                      Icon(Icons.replay),
+                      Text(Messages.reAddToLibrary)
+                    ],
+                  ),
+                );
+              case MovieAction.none:
+                return SizedBox.shrink();
+            }
+          },
+        ),
       ),
     );
   }
 
-  String getButtonText() {
-    switch (widget.action) {
-      case MovieAction.addToLibrary:
-        return Messages.addToLibrary;
+  Future<void> _handleRemoveFromLibrary(BuildContext context) async {
+    final confirm = await confirmDialog(
+      context: context,
+      movie: widget.movie,
+      title: Messages.removeFromLibraryTitle,
+      text_1: Messages.removeFromLibraryText_1,
+      text_2: Messages.removeFromLibraryText_2,
+      invertButtons: true,
+    );
 
-      case MovieAction.markAsWatched:
-        return Messages.markAsWatched;
+    if (confirm == true) {
+      await context
+          .read<MovieDetailsController>()
+          .removeFromLibrary(widget.movie);
+    }
+  }
+
+  Future<void> _handleAddToLibrary() async {
+    final confirm = await confirmDialog(
+      context: context,
+      movie: widget.movie,
+      title: Messages.addToLibraryTitle,
+      text_1: Messages.addToLibraryText_1,
+      text_2: Messages.addToLibraryText_2,
+      invertButtons: false,
+    );
+
+    if (confirm == true) {
+      await context.read<MovieDetailsController>().saveInLibrary(widget.movie);
+    }
+  }
+
+  Future<void> _handleReAddToLibrary() async {
+    final confirm = await confirmDialog(
+      context: context,
+      movie: widget.movie,
+      title: Messages.reAddToLibraryTitle,
+      text_1: Messages.reAddToLibraryText_1,
+      text_2: Messages.reAddToLibraryText_2,
+      invertButtons: false,
+    );
+
+    if (confirm == true) {
+      await context.read<MovieDetailsController>().saveInLibrary(widget.movie
+        ..watched = 0
+        ..watchedAt = null);
+    }
+  }
+
+  Future<void> _handleMarkAsWatched() async {
+    final confirm = await confirmDialog(
+      context: context,
+      movie: widget.movie,
+      title: Messages.markAsWatched,
+      text_1: Messages.markAsWatchedText_1,
+      text_2: Messages.markAsWatchedText_2,
+      invertButtons: false,
+    );
+
+    if (confirm == true) {
+      await context.read<MovieDetailsController>().saveInLibrary(widget.movie
+        ..watched = 1
+        ..watchedAt = DateTime.now());
     }
   }
 
@@ -321,7 +399,7 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
     if (year != null) parts.add(year);
 
     final runtime = widget.movie.runtime;
-    if (runtime != null) {
+    if (runtime != null && runtime > 0) {
       final hours = runtime ~/ 60;
       final minutes = runtime % 60;
       if (hours == 0) {
@@ -334,5 +412,15 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
     }
 
     return parts.join('  |  ');
+  }
+
+  String formatWatchDate(DateTime dateTime) {
+    final now = DateTime.now();
+
+    final time = DateFormat('HH:mm').format(dateTime);
+    final date = dateTime.year == now.year
+        ? DateFormat("d 'de' MMMM", 'pt_BR').format(dateTime)
+        : DateFormat("dd/MM/yyyy").format(dateTime);
+    return 'Assistido às $time de $date';
   }
 }

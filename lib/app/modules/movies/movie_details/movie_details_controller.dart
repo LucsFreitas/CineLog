@@ -49,13 +49,13 @@ class MovieDetailsController extends DefaultChangeNotifier {
     }
   }
 
-  Future<Movie> loadData(Movie movie) async {
+  Future<void> loadData(Movie movie) async {
     infoMessage = null;
     showLoadingAndResetState();
     notifyListeners();
 
     try {
-      return await _movieService.fetchMovieDetails(movie);
+      await _movieService.fetchMovieDetails(movie);
     } on Exception catch (e, s) {
       print(e);
       print(s);
@@ -64,8 +64,6 @@ class MovieDetailsController extends DefaultChangeNotifier {
       hideLoading();
       notifyListeners();
     }
-
-    return movie;
   }
 
   Future<void> openUrl(String url) async {

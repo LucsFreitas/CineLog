@@ -110,8 +110,8 @@ class _FindMoviePageState extends State<FindMoviePage> {
                 onTap: () => Navigator.of(context).pushNamed(
                   '/movie_details',
                   arguments: {
-                    'action': MovieAction.addToLibrary,
-                    'movie': movie
+                    'action': MovieAction.bothAdd,
+                    'movie': movie,
                   },
                 ),
               );
