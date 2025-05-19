@@ -83,7 +83,7 @@ class Movie {
       watchedAt:
           map['watched_at'] != null ? DateTime.parse(map['watched_at']) : null,
       displayTitle:
-          map['title'] ?? map['originalTitle'] ?? Messages.titleNotAvailable);
+          map['title'] ?? map['original_title'] ?? Messages.titleNotAvailable);
 
   factory Movie.fromJson(String json) => Movie.fromMap(jsonDecode(json));
 }

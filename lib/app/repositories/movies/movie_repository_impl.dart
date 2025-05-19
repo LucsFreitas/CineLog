@@ -1,5 +1,7 @@
+import 'package:cine_log/app/core/app_preferences/app_preferences.dart';
 import 'package:cine_log/app/core/database/sqlite_connection_factory.dart';
 import 'package:cine_log/app/models/movie.dart';
+import 'package:cine_log/app/models/sort_option.dart';
 import 'package:cine_log/app/repositories/movies/movie_repository.dart';
 
 class MovieRepositoryImpl extends MovieRepository {
@@ -42,9 +44,12 @@ class MovieRepositoryImpl extends MovieRepository {
 
   @override
   Future<List<Movie>> findAll(bool watched, String? movieName) async {
+    SortOption sortOption = await AppPreferences.getSortOption();
+
     final conn = await _sqliteConnectionFactory.openConnection();
     final result = await conn.rawQuery(
-        'select * from movies where watched = ${watched ? 1 : 0} order by created_at desc');
+        'select * from movies where watched = ? order by ${sortOption.getNameFieldToQuery()} ${sortOption.direction.name}',
+        [watched ? 1 : 0]);
     return result.map((movie) => Movie.fromMap(movie)).toList();
   }
 }

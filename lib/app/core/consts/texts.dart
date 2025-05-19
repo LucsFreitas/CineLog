@@ -60,6 +60,15 @@ class Messages {
   static String reAddToLibraryText_2 =
       ' para a lista de filmes a serem assistidos?';
 
+  // BottomSheet
+  static String sortConfigTitle = 'Configurar ordenação:';
+  static String ascDirection = 'Ascendente (A-Z)';
+  static String descDirection = 'Descendente (Z-A)';
+  static String nameSortOption = 'Nome';
+  static String createdAtSortOption = 'Data de inclusão';
+  static String voteAverageSortOption = 'Avaliação';
+  static String durationSortOption = 'Duração';
+
   // Validations
   static String emailInvalidFormat = 'Deve ser um email válido';
   static String emailRequired = 'Email é obrigatório';

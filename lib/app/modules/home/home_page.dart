@@ -1,7 +1,10 @@
 import 'package:cine_log/app/core/consts/texts.dart';
 import 'package:cine_log/app/modules/home/home_page_movie_list_tab.dart';
+import 'package:cine_log/app/modules/home/sort_options_notifier.dart';
 import 'package:cine_log/app/modules/home/widgets/home_drawer.dart';
+import 'package:cine_log/app/modules/home/widgets/home_layout_settings_modal.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 enum PopupMenuPages {
   settings,
@@ -15,9 +18,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late SortOptionsNotifier sortNotifier;
+
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    sortNotifier = context.read<SortOptionsNotifier>();
   }
 
   @override
@@ -35,7 +46,14 @@ class _HomePageState extends State<HomePage> {
               icon: Icon(Icons.search),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (ctx) => HomeLayoutSettingsModal(
+                    sortNotifier: sortNotifier,
+                  ),
+                );
+              },
               icon: Icon(Icons.sort),
             ),
             PopupMenuButton(

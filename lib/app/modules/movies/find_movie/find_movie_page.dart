@@ -40,7 +40,7 @@ class _FindMoviePageState extends State<FindMoviePage> {
             },
             successCallback: (notifier, listener) {
               listener.dispose();
-              Navigator.of(context).pushReplacementNamed('/home');
+              Navigator.of(context).pop(context);
             });
     searchFieldController.addListener(_printLatestValue);
     _scrollController.addListener(_scrollListener);
